@@ -3,13 +3,15 @@ import random
 import tflearn.datasets.mnist as mnist
 from skimage import io
 from fractions import Fraction
+import tensorflow as tf
 model = net.model
 path_to_model = 'final-model.tflearn'
 X, Y, testX, testY= mnist.load_data(one_hot=True)
 model.load(path_to_model)
 # Randomly take an image from the test set
 correct=0
-wrong=[]
+test_result=[]
+test_label=[]
 
 def count_all(vec):
     buckets = [0] * 10
@@ -52,17 +54,23 @@ for j in range (0,10000):
     #print(count)
     if(count==prediction):
     	correct=correct+1
+        test_result.append(prediction)
+        test_label.append(count)
+        
         #print(correct)
     else:
-        wrong.append(count)
-        correct=correct
+        #wrong.append(count)
+        #correct=correct
+        test_result.append(count)
+        test_label.append(prediction)
  
 
 accuracytest=float(correct/10000.0)
-wrong_alg=count_all(wrong)
+#wrong_alg=count_all(wrong)
 
 correct_train=0
-wrong_train=[]
+train_result=[]
+train_label=[]
 
 for j in range (0,10000):
 
@@ -78,17 +86,25 @@ for j in range (0,10000):
     #print(count)
     if(count==prediction):
         correct_train=correct_train+1
-        #print(correct)
+        train_result.append(prediction)
+        train_label.append(count)
     else:
-        wrong_train.append(count)
-        correct_train=correct_train
+        train_result.append(prediction)
+        train_label.append(count)
  
 
 accuracytrain=float(correct_train/10000.0)
-wrong_alg_train=count_all(wrong_train)
+#wrong_alg_train=count_all(wrong_train)
+
+confusion_test= tf.confusion_matrix(test_label,test_result)
+confusion_train= tf.confusion_matrix(train_label,train_result)
 
 print("Accuracy for test set=", accuracytest)
-print(wrong_alg)
+print("Confusion matrix for test set result")
+with tf.Session():
+   print('Confusion Matrix: \n\n', tf.Tensor.eval(confusion_test,feed_dict=None, session=None))
 print("Accuracy for train set=", accuracytrain)
-print(wrong_alg_train)
+with tf.Session():
+   print('Confusion Matrix: \n\n', tf.Tensor.eval(confusion_train,feed_dict=None, session=None))
+#print(wrong_alg_train)
 
