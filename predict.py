@@ -13,6 +13,28 @@ correct=0
 test_result=[]
 test_label=[]
 
+#doFlip = False
+doFlip = True
+
+def flipY(x):
+    a=range(0, 14)
+    b=range(14,28)
+    pm=x[a]
+    sm=x[b]
+    x[a]=sm
+    x[b]=pm
+    return x
+
+def flipX(x):
+    a=range(0, 14)
+    b=range(14,28)
+    pm=x[:,a]
+    sm=x[:,b]
+    x[:,a]=sm
+    x[:,b]=pm
+    return x
+
+
 def count_all(vec):
     buckets = [0] * 10
     for x in range(0,len(vec)):
@@ -74,7 +96,10 @@ train_label=[]
 
 for j in range (0,10000):
 
-    x = X[j].reshape((28, 28, 1))
+    x = X[j].reshape((28, 28, 1))    
+    if(doFlip):
+        x=flipX(x)
+    
     result = model.predict([x])[0] # Predict
     prediction = result.tolist().index(max(result)) # The index represents the number predicted in this case
     #print("Prediction", prediction)
@@ -92,6 +117,7 @@ for j in range (0,10000):
         train_result.append(prediction)
         train_label.append(count)
  
+# print(X[1].reshape((28, 28, 1)))
 
 accuracytrain=float(correct_train/10000.0)
 #wrong_alg_train=count_all(wrong_train)
