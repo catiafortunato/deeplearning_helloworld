@@ -13,7 +13,7 @@ correct=0
 test_result=[]
 test_label=[]
 
-#doFlip = False
+#doFlip = False #Defines if we want to analyse the images normaly or switched
 doFlip = True
 
 def flipY(x):
